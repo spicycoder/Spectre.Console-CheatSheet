@@ -268,6 +268,8 @@ selectionTable.AddRow(name, age.ToString(), city, string.Join(Environment.NewLin
 AnsiConsole.Write(selectionTable);
 ```
 
+---
+
 ### Live Display
 
 ![Live Display](./assets/live-display.gif)
