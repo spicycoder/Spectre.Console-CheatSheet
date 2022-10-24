@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Spectre.Console;
+using SpectreCheatSheet;
 
 var faker = new Faker();
 
@@ -142,3 +143,31 @@ var selectionTable = new Table();
 selectionTable.AddColumns($"[bold {Color.DarkMagenta}]Name[/]", $"[bold {Color.DarkGoldenrod}]Age[/]", $"[bold {Color.DarkViolet}]City[/]", $"[bold {Color.Lime}]Preferred Locations[/]");
 selectionTable.AddRow(name, age.ToString(), city, string.Join(Environment.NewLine, preferredCities));
 AnsiConsole.Write(selectionTable);
+
+// Live display: https://spectreconsole.net/live/live-display
+var realtimeTable = new Table().Centered();
+AnsiConsole.Live(realtimeTable)
+    .AutoClear(false)
+    .Start(context =>
+    {
+        realtimeTable.AddColumns(
+            $"[bold {Color.Purple}]Id[/]",
+            $"[bold {Color.Yellow}]Email[/]",
+            $"[bold {Color.Lime}]First Name[/]",
+            $"[bold {Color.DarkMagenta}]Last Name[/]");
+        context.Refresh();
+
+        var client = new UsersClient();
+        for (var i = 1; i <= 12; i++)
+        {
+            var response = client.GetUser(i).Result;
+            var user = response.User;
+            realtimeTable.AddRow(
+                    $"[link=https://reqres.in/img/faces/{user.Id}-image.jpg {Color.Purple}]{user.Id}[/]",
+                    $"[{Color.Yellow}]{user.Email}[/]",
+                    $"[{Color.Lime}]{user.FirstName}[/]",
+                    $"[{Color.DarkMagenta}]{user.LastName}[/]");
+
+            context.Refresh();
+        }
+    });
